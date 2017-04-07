@@ -88,9 +88,6 @@ class Solver:
 
         return candidate_layers
 
-    def analyze_box(self, max_len_x, gap_len_y, max_len_y, gap_len_z, max_len_z, orientation):
-        pass
-
     def pack_box(self, box, coords, orientation):
         self.boxes[box].status = True
         self.boxes[box].pos = coords
@@ -458,7 +455,7 @@ class Solver:
         self.layer_thickness = 0
         self.lilz = 0
 
-solver = Solver(10)
+solver = Solver(8)
 print("Pallet Dimensions: {0}".format(solver.pallet_dims))
 print("Number of Boxes: {0}".format(len(solver.boxes)))
 print("Pallet Volume: {0}".format(solver.pallet_vol))
