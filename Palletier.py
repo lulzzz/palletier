@@ -390,8 +390,7 @@ class Solver:
         for variant, pallet_orientation in enumerate(unique_permutations):
             candidate_layers = self.get_candidate_layers(self.boxes, pallet_orientation)
             layers = sorted(candidate_layers, key=(lambda x: x.value))
-            remaining_y = pallet_orientation[1]
-            remaining_z = pallet_orientation[2]
+            print("Num Layers:{}".format(len(layers)))
             for iteration, layer in enumerate(layers):
                 print('Variant: {0} Iteration: {1} Past: {2:0.2f}% Best: {3:0.2f}%'.format(
                     variant, iteration, (solver.packed_vol/solver.pallet_vol)*100, (solver.best_vol/solver.pallet_vol) * 100
@@ -400,6 +399,8 @@ class Solver:
                 self.layer_thickness = layer.width
                 self.packed_vol = 0
                 packed_y = 0
+                remaining_y = pallet_orientation[1]
+                remaining_z = pallet_orientation[2]
                 self.num_packed = 0
                 self.packing = True
                 while self.packing:
