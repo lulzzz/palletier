@@ -430,8 +430,10 @@ class Solver:
                     self.best_num_packed = self.num_packed
                 if self.best_vol / self.pallet_vol == 1:
                     return
+                print()
             if self.best_vol / self.pallet_vol == 1:
                 return
+            print()
 
     def __init__(self, filename):
         pallet_dims, self.boxes = self.initialize(filename)
