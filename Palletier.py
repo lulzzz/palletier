@@ -51,7 +51,7 @@ class Solver:
     def initialize(filename):
         print('Initializing')
         boxes = []
-        with open(filename, 'r', encoding='utf-8') as input_file:
+        with open('inputs/{0}.txt'.format(filename), 'r', encoding='utf-8') as input_file:
             pallet_line = input_file.readline()
             pallet_dims = list(int(dim.strip()) for dim in pallet_line.strip().split(','))
             for line in input_file:
@@ -452,7 +452,7 @@ class Solver:
         self.layer_thickness = 0
         self.lilz = 0
 
-solver = Solver('input-7.txt')
+solver = Solver(10)
 print("Pallet Dimensions: {0}".format(solver.pallet_dims))
 print("Number of Boxes: {0}".format(len(solver.boxes)))
 print("Pallet Volume: {0}".format(solver.pallet_vol))
