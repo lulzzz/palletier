@@ -179,9 +179,14 @@ class Solver:
         layer_thickness = 0
         eval_value = 100000
         pallet_x, pallet_y, pallet_z = pallet_orientation
+        checked_boxes = []
         for box in self.boxes:
             if box.status:
                 continue
+            if box in checked_boxes:
+                continue
+            else:
+                checked_boxes.append(box)
             for orientation in list(permutations(box.dims))[::2]:
                 ex_dim, dim2, dim3 = orientation
                 if (ex_dim <= remaining_y and
@@ -201,7 +206,8 @@ class Solver:
     def pack_layer(self, layer_thickness, pallet_orientation,
                    remaining_y, remaining_z, packed_y):
         if layer_thickness == 0:
-            return False
+            self.packing == False
+            return
         pallet_x = pallet_orientation[0]
         self.corners = [Corner(pallet_x, 0)]
         while True:
@@ -389,8 +395,8 @@ class Solver:
             remaining_y = pallet_orientation[1]
             remaining_z = pallet_orientation[2]
             for iteration, layer in enumerate(layers):
-                print('Variant: {0} Iteration: {1} Best: {2:0.2f}%'.format(
-                    variant, iteration, (solver.best_vol/solver.pallet_vol) * 100
+                print('Variant: {0} Iteration: {1} Past: {2:0.2f}% Best: {3:0.2f}%'.format(
+                    variant, iteration, (solver.packed_vol/solver.pallet_vol)*100, (solver.best_vol/solver.pallet_vol) * 100
                 ))
                 self.reset_boxes()
                 self.layer_thickness = layer.width
