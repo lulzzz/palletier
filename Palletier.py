@@ -112,7 +112,7 @@ class Solver:
                 checked.append(box)
             for orientation in set(permutations(box.dims)):
                 dim1, dim2, dim3 = orientation
-                if dim1 <=max_len_x and dim2 <= max_len_y and dim3 <= max_len_z:
+                if dim1 <=max_len_x and self.packed_y + dim2 <= max_len_y and dim3 <= max_len_z:
                     if dim2 <= gap_len_y:
                         y_diff = gap_len_y - dim2
                         x_diff = max_len_x - dim1
