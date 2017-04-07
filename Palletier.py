@@ -140,36 +140,37 @@ class Solver:
         gap_idx = self.corners.index(self.smallest_gap)
         if any(match):
             return match[0], match[1], None
-        elif any(other_match) and (self.layer_in_layer or len(self.corners) == 1):
-            if not self.layer_in_layer:
-                self.prev_layer = self.layer_thickness
-                self.lilz = self.smallest_gap.z
-            self.layer_in_layer += other_match[1][1] - self.layer_thickness
-            new_thickness = other_match[1][1]  # Match -> Orientation -> Y dimension
-            return other_match[0], other_match[1], new_thickness
         else:
-            if len(self.corners) == 1:
-                self.layer_finished = True
+            if any(other_match) and (self.layer_in_layer or len(self.corners) == 1):
+                if not self.layer_in_layer:
+                    self.prev_layer = self.layer_thickness
+                    self.lilz = self.smallest_gap.z
+                self.layer_in_layer += (other_match[1][1] - self.layer_thickness)
+                new_thickness = other_match[1][1]  # Match -> Orientation -> Y dimension
+                return other_match[0], other_match[1], new_thickness
             else:
-                self.edge_is_even = True
-                if gap_idx == 0:
-                    del self.corners[gap_idx]
-                elif gap_idx == len(self.corners) - 1:
-                    self.corners[gap_idx - 1].x = self.smallest_gap.x
-                    del self.corners[gap_idx]
+                if len(self.corners) == 1:
+                    self.layer_finished = True
                 else:
-                    prev_gap = self.corners[gap_idx - 1]
-                    next_gap = self.corners[gap_idx + 1]
-                    if prev_gap.z == next_gap.z:
-                        self.corners[gap_idx - 1].x = next_gap.x
-                        # Delete the smallest gap
+                    self.edge_is_even = True
+                    if gap_idx == 0:
                         del self.corners[gap_idx]
-                        # Also delete the next gap
+                    elif gap_idx == len(self.corners) - 1:
+                        self.corners[gap_idx - 1].x = self.smallest_gap.x
                         del self.corners[gap_idx]
                     else:
-                        if prev_gap.z < next_gap.z:
-                            self.corners[gap_idx - 1].x = self.smallest_gap.x
-                        del self.corners[gap_idx]
+                        prev_gap = self.corners[gap_idx - 1]
+                        next_gap = self.corners[gap_idx + 1]
+                        if prev_gap.z == next_gap.z:
+                            self.corners[gap_idx - 1].x = next_gap.x
+                            # Delete the smallest gap
+                            del self.corners[gap_idx]
+                            # Also delete the next gap
+                            del self.corners[gap_idx]
+                        else:
+                            if prev_gap.z < next_gap.z:
+                                self.corners[gap_idx - 1].x = self.smallest_gap.x
+                            del self.corners[gap_idx]
             return None, None, None
 
     def get_layer(self, pallet_orientation, remaining_y):
