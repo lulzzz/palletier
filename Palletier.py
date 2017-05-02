@@ -117,7 +117,7 @@ class Topology:
                     del self.smallest
                 else:
                     self.smallest.z += dims.dim3
-            elif self.smallest.smallest_prev.x < (self.max_x - self.smallest.x):
+            elif self.smallest_prev.x < (self.max_x - self.smallest.x):
                 if self.smallest.z + dims.dim3 == self.smallest_prev.z:
                     x_coord = self.smallest.x - dims.dim1
                     self.smallest.x -= dims.dim1
@@ -154,7 +154,7 @@ class Topology:
                 else:
                     new_corner = Corner(self.smallest_prev.x + dims.dim1,
                                         self.smallest.z + dims.dim3)
-                    self.corners.insert(self.smallest_index - 1, new_corner)
+                    self.corners.insert(self.smallest_index, new_corner)
         return x_coord
 
     def even(self):
@@ -234,6 +234,13 @@ class Solver:
         self.num_packed += 1
 
     def get_box(self, max_len_x, gap_len_y, max_len_y, gap_len_z, max_len_z):
+        all_dims = {dim for box in self.boxes for dim in box.dims}
+        max_dims = (max_len_x, max_len_y, max_len_z)
+        # 3 booleans that represent if any of the max_dims are too small for any box to fit
+        too_little_dims = [all(max_dim < dim for dim in all_dims) for max_dim in max_dims]
+        # If any dim is too small, no boxes can fit at all.
+        if any(too_little_dims):
+            return (None, None), (None, None)
         min_y_diff = min_x_diff = min_z_diff = 99999
         other_y_diff = other_x_diff = other_z_diff = 99999
         # Best box in the best orientation
@@ -243,10 +250,10 @@ class Solver:
         for idx, box in enumerate(self.boxes):
             if box.status:
                 continue
-            if box in checked:
+            if box.dims in checked:
                 continue
             else:
-                checked.append(box)
+                checked.append(box.dims)
             for orientation in set(permutations(box.dims)):
                 dim1, dim2, dim3 = orientation
                 if dim1 <= max_len_x and dim2 <= max_len_y and dim3 <= max_len_z:
@@ -298,11 +305,11 @@ class Solver:
                         del edge.smallest
                     else:
                         if edge.smallest_prev.z == edge.smallest_next.z:
-                            del self.smallest_prev
-                            del self.smallest
+                            del edge.smallest_prev
+                            del edge.smallest
                         else:
                             if edge.smallest_prev.z < edge.smallest_next.z:
-                                self.smallest_prev.x = edge.smallest.x
+                                edge.smallest_prev.x = edge.smallest.x
                             del edge.smallest
                 return None, None, None
 
@@ -523,7 +530,9 @@ class Solver:
 
 #import pdb; pdb.set_trace()
 
-solver = Solver('lego-1big-1square-1one')
+test_case = input('Enter testcase: ')
+# test_Case = 'lego-1big-1square-1one'
+solver = Solver(test_case)
 print("Pallet Dimensions: {0}".format(solver.pallet_dims))
 print("Number of Boxes: {0}".format(len(solver.boxes)))
 print("Pallet Volume: {0}".format(solver.pallet_vol))
