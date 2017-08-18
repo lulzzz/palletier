@@ -28,9 +28,17 @@ class Box:
         return self.idx == other.idx
 
     def __repr__(self):
-        return (f'Box(idx={self.idx}, dims={self.dims}, ' +
-                f'weight={self.weight}, pos={self.pos}, ' +
-                f'orientation={self.orientation})')
-        return 'Box(idx={0}, dims={1}, weight={2}, pos={3}, orientation={4})'.format(
-                self.idx, self.dims, self.weight, self.pos, self.orientation
-        )
+        repr_str = f'Box(idx={self.idx}, dims={self.dims}, weight={self.weight}'
+        if self.pos != Coords(0, 0, 0):
+            repr_str += f', pos={self.pos}'
+        if self.orientation != Dims(0, 0, 0):
+            repr_str += f', orientation={self.orientation}'
+        repr_str += ')'
+        return repr_str
+
+    def __str__(self):
+        output = f'Box({self.dims.dim1}, {self.dims.dim2}, {self.dims.dim3}'
+        if self.weight != 0:
+            output += f', weight={self.weight}'
+        output += ')'
+        return output
