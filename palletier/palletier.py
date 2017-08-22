@@ -25,22 +25,6 @@ class Solver:
         self.total_boxes_vol = 0
         self.packed_pallets = []
 
-    def initialize_from_file(self, filename):
-        filestring = 'inputs/{0}.txt'.format(filename)
-        with open(filestring, 'r', encoding='utf-8') as input_file:
-            pallet_num = int(input_file.readline())
-            for i in range(pallet_num):
-                pallet_line = input_file.readline()
-                pallet_dims = list(int(dim.strip())
-                                   for dim in pallet_line.strip().split(','))
-                self.pallets.append(Pallet(pallet_dims))
-            for line in input_file:
-                *dims, num = (int(dim.strip()) for dim in line.strip().split(','))
-                for i in range(num):
-                    self.boxes.append(Box(dims))
-        self.total_boxes_vol = sum(box.vol for box in self.boxes)
-        self.total_num_boxes = len(self.boxes)
-
     def pack(self):
         remaining_boxes = self.boxes
         while len(remaining_boxes) != 0:  # All boxes need to be packed
